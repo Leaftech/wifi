@@ -20,11 +20,11 @@ const WPA_CMD = {
     selectNetwork: 'SELECT_NETWORK :id'
 };
 /**
- * @class WpaCli
+ * WpaCli to control wpa_supplicant
  */
 class WpaCli extends EventEmitter {
     /**
-     * @constructs WpaCli
+     * constructs WpaCli
      * @param  {String} ifName interface name eg. wlan0
      */
     constructor(ifName) {
