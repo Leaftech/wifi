@@ -11,6 +11,12 @@ module.exports = function(grunt) {
             },
             all: ['*.js']
         },
+        jsdoc2md: {
+            oneOutputFile: {
+                src: './*.js',
+                dest: 'DOCS.md'
+            }
+        },
         jsdoc: {
             dist: {
                 src: ['*.js'],
@@ -60,6 +66,6 @@ module.exports = function(grunt) {
 
 
     // Default task(s).
-    grunt.registerTask('default', ['jshint', 'grunt-shell', 'jsdoc', 'connect']);
+    grunt.registerTask('default', ['jshint', 'grunt-shell', 'jsdoc', 'connect', 'jsdoc2md']);
 
 };
