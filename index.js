@@ -17,7 +17,8 @@ const WPA_CMD = {
     setNetwork: 'SET_NETWORK :id :key :value',
     status: 'STATUS',
     enableNetwork: 'ENABLE_NETWORK :id',
-    selectNetwork: 'SELECT_NETWORK :id'
+    selectNetwork: 'SELECT_NETWORK :id',
+    disconnectAP: 'DISCONNECT'
 };
 /**
  * WpaCli to control wpa_supplicant
@@ -196,7 +197,7 @@ class WpaCli extends EventEmitter {
         /**
          * request for status
          */
-        status() {
+    status() {
             this.sendCmd(WPA_CMD.status);
         }
         /**
@@ -272,13 +273,19 @@ class WpaCli extends EventEmitter {
          * stop dhclient for interface
          */
     stopDhclient() {
-        exec('dhclient -r ' + this.ifName, function(err) {
-            if (err) {
-                console.log(err);
-            } else {
-                this.emit('ap_disconnected');
-            }
-        }.bind(this));
+            exec('dhclient -r ' + this.ifName, function(err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    this.emit('ap_disconnected');
+                }
+            }.bind(this));
+        }
+        /**
+         * disconnect from AP
+         */
+    disconnectAP() {
+        this.sendCmd(WPA_CMD.disconnectAP);
     }
 }
 
