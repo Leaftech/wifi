@@ -44,13 +44,13 @@ class WpaCli extends EventEmitter {
             this.client.once('connect', this._onConnect.bind(this));
             this.client.once('listening', this._onListening.bind(this));
             this.client.connect(this.socketPath);
-            this.client.bind(this.clientPath);
+
         }
         /**
          * connect event handler
          */
     _onConnect() {
-            console.log('connected');
+            this.client.bind(this.clientPath);
         }
         /**
          * message event handler
@@ -188,6 +188,18 @@ class WpaCli extends EventEmitter {
             this.sendCmd(WPA_CMD.addNetwork);
         }
         /**
+         * request to list networks
+         */
+    listNetworks() {
+            this.sendCmd(WPA_CMD.listNetwork);
+        }
+        /**
+         * request for status
+         */
+        status() {
+            this.sendCmd(WPA_CMD.status);
+        }
+        /**
          * status handler, parses status messages and emits status event
          * @param  {String} msg status message
          */
@@ -236,14 +248,12 @@ class WpaCli extends EventEmitter {
          * AP connected event handler
          */
     _onApConnected() {
-            this.emit('ap_connected');
             this.startDhclient();
         }
         /**
          * AP disconnect event handler
          */
     _onApDisconnected() {
-            this.emit('ap_disconnected');
             this.stopDhclient();
         }
         /**
@@ -254,9 +264,9 @@ class WpaCli extends EventEmitter {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log('dhclient started');
+                    this.emit('ap_connected');
                 }
-            });
+            }.bind(this));
         }
         /**
          * stop dhclient for interface
@@ -266,9 +276,9 @@ class WpaCli extends EventEmitter {
             if (err) {
                 console.log(err);
             } else {
-                console.log('dhclient stopped');
+                this.emit('ap_disconnected');
             }
-        });
+        }.bind(this));
     }
 }
 
