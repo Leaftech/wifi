@@ -23,16 +23,17 @@ describe('WpaCli AP connection Tests', function() {
 
             });
             wpa.once('ap_connected', function() {
+                clearTimeout(errTimeout);
                 done();
             });
             wpa.connect();
-        }).timeout(5000);
+        }).timeout(10000);
 
     });
 });
 describe('WpaCli AP disconnection Tests', function() {
     describe('connect to wpa', function() {
-        it('should emit an connect to AP', function(done) {
+        it('should emit an disconnect from AP', function(done) {
 
 
             var errTimeout = setTimeout(function() {
@@ -40,12 +41,13 @@ describe('WpaCli AP disconnection Tests', function() {
                 done();
             }, 1000);
 
-            wpa.disconnect();
+            wpa.disconnectAP();
             wpa.once('ap_disconnected', function() {
+                clearTimeout(errTimeout);
                 done();
             });
             wpa.connect();
-        }).timeout(5000);
+        }).timeout(10000);
 
     });
 });
