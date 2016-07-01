@@ -92,11 +92,11 @@ class WpaCli extends EventEmitter {
     _onScanResult(msg) {
         msg = msg.split('\n');
         msg.splice(0, 1);
-        var scan_results = [];
+        var scanResults = [];
         msg.forEach(function(line) {
             if (line.length > 3) {
                 line = line.split('\t');
-                scan_results.push({
+                scanResults.push({
                     bssid: line[0].trim(),
                     freq: line[1].trim(),
                     rssi: line[2].trim(),
@@ -104,7 +104,7 @@ class WpaCli extends EventEmitter {
                 });
             }
         });
-        this.emit('scan_results', scan_results);
+        this.emit('scan_results', scanResults);
     }
     _onRawMsg(msg) {
         this.emit('raw_msg', msg);
@@ -112,17 +112,17 @@ class WpaCli extends EventEmitter {
     _onListNetwork(msg) {
         msg = msg.split('\n');
         msg.splice(0, 1);
-        var network_results = [];
+        var networkResults = [];
         msg.forEach(function(line) {
             if (line.length > 3) {
                 line = line.split('\t');
-                network_results.push({
-                    network_id: line[0].trim(),
+                networkResults.push({
+                    networkId: line[0].trim(),
                     ssid: line[1].trim()
                 });
             }
         });
-        this.emit('list_network', network_results);
+        this.emit('list_network', networkResults);
     }
     addNetwork() {
         this.sendCmd(WPA_CMD.addNetwork);
