@@ -4,7 +4,10 @@
   "description": "wpa wifi controller",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
+  },"repository": {
+    "type": "git",
+    "url": "https://github.com/Leaftech/wifi.git"
   },
   "keywords": [
     "wpa",
@@ -14,8 +17,6 @@
   "author": "Ashish",
   "license": "ISC",
   "dependencies": {
-    "async": "^2.0.0-rc.6",
-    "underscore": "^1.8.3",
     "unix-dgram": "^1.0.0"
   },
   "devDependencies": {

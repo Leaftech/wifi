@@ -1,6 +1,5 @@
 'use strict';
 const unix = require('unix-dgram');
-// const _ = require('underscore');
 const EventEmitter = require('events').EventEmitter;
 const exec = require('child_process').exec;
 /*
