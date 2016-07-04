@@ -4,7 +4,7 @@
 WpaCli to control wpa_supplicant
 
 This only works on linux, tested on ubuntu 14.4 and debian jesse.
-you need to have wpa_supplicant installed and running  with wpa_spplicant having config having : **ctrl_interface=/var/run/wpa_supplicant**  
+you need to have wpa_supplicant installed , run using sudo and running  with wpa_spplicant having config : **ctrl_interface=/var/run/wpa_supplicant**  
 
 **Reference:**
 http://w1.fi/wpa_supplicant/devel/ctrl_iface_page.html
