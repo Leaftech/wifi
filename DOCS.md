@@ -21,6 +21,8 @@ WpaCli to control wpa_supplicant
     * [._onRawMsg(msg)](#WpaCli+_onRawMsg)
     * [._onListNetwork(msg)](#WpaCli+_onListNetwork)
     * [.addNetwork()](#WpaCli+addNetwork)
+    * [.listNetworks()](#WpaCli+listNetworks)
+    * [.status()](#WpaCli+status)
     * [._onStatus(msg)](#WpaCli+_onStatus)
     * [.setSSID(networkId, add)](#WpaCli+setSSID)
     * [.setPassword(networkId, password)](#WpaCli+setPassword)
@@ -30,6 +32,7 @@ WpaCli to control wpa_supplicant
     * [._onApDisconnected()](#WpaCli+_onApDisconnected)
     * [.startDhclient()](#WpaCli+startDhclient)
     * [.stopDhclient()](#WpaCli+stopDhclient)
+    * [.disconnectAP()](#WpaCli+disconnectAP)
 
 <a name="new_WpaCli_new"></a>
 
@@ -165,6 +168,18 @@ list network handler, list all configured networks or devices
 add new network
 
 **Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+<a name="WpaCli+listNetworks"></a>
+
+### wpaCli.listNetworks()
+request to list networks
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+<a name="WpaCli+status"></a>
+
+### wpaCli.status()
+request for status
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
 <a name="WpaCli+_onStatus"></a>
 
 ### wpaCli._onStatus(msg)
@@ -244,5 +259,11 @@ start dhclient for interface
 
 ### wpaCli.stopDhclient()
 stop dhclient for interface
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+<a name="WpaCli+disconnectAP"></a>
+
+### wpaCli.disconnectAP()
+disconnect from AP
 
 **Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
