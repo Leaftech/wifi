@@ -17,13 +17,12 @@ http://w1.fi/wpa_supplicant/devel/ctrl_iface_page.html
 	  var wpa = new WpaCli('wlan0');
 	  wpa.on('ready', function() {
 	      console.log('ready');
-	      wpa.listNetwork();
+	      wpa.listNetworks();
 	      wpa.addNetwork();
 	      wpa.setSSID(0, 'ssid');
 	      wpa.setPassword(0, 'password');
 	      wpa.enableNetwork(0);
 	      wpa.selectNetwork(0);
-	      wpa.listNetwork();
 	  });
 
 	  wpa.connect();
