@@ -13,7 +13,7 @@ http://w1.fi/wpa_supplicant/devel/ctrl_iface_page.html
 
 
 	  'use strict';
-	  const WpaCli = require('Wpa-wifi');
+	  const WpaCli = require('wpa-wifi');
 	  var wpa = new WpaCli('wlan0');
 	  wpa.on('ready', function() {
 	      console.log('ready');
