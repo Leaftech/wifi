@@ -320,6 +320,7 @@ class WpaCli extends EventEmitter {
         }
         /**
          * fetch Peer Information
+         * @param  {String} peerAddress peer device address
          */
     peerInfo(peerAddress) {
             var cmd = WPA_CMD.peerInfo.replace(':peer_addr', peerAddress);
@@ -343,28 +344,40 @@ class WpaCli extends EventEmitter {
          * @param  {Boolean} isOwner     Your role, are you group owner? if yes then true else false
          */
     peerConnectPIN(peerAddress, pin, isOwner) {
-        var cmd = WPA_CMD.peerConnect.replace(':peer_addr', peerAddress);
-        cmd = cmd.replace(':auth_type', 'pin').replace(':pin', pin);
-        cmd = cmd.replace(':owner_params', (isOwner) ? 'auth go_intent=7' : '');
-        this.sendCmd(WPA_CMD.peerConnect);
-    }
+            var cmd = WPA_CMD.peerConnect.replace(':peer_addr', peerAddress);
+            cmd = cmd.replace(':auth_type', 'pin').replace(':pin', pin);
+            cmd = cmd.replace(':owner_params', (isOwner) ? 'auth go_intent=7' : '');
+            this.sendCmd(WPA_CMD.peerConnect);
+        }
+        /**
+         * new peer event handler
+         * @param  {String} msg event message
+         */
     _onNewPeerFound(msg) {
-        var deviceAddressExp = /p2p_dev_addr\=(\w{2}:\w{2}:\w{2}:\w{2}:\w{2}:\w{2})/g;
-        var deviceNameExp = /name\=\'(.*)\'/g;
-        var deviceName = deviceNameExp.exec(msg)[1];
-        var deviceAddress = deviceAddressExp.exec(msg)[1];
-        this.emit('peer_found', {
-            deviceAddress: deviceAddress,
-            deviceName: deviceName
-        });
-    }
+            var deviceAddressExp = /p2p_dev_addr\=(\w{2}:\w{2}:\w{2}:\w{2}:\w{2}:\w{2})/g;
+            var deviceNameExp = /name\=\'(.*)\'/g;
+            var deviceName = deviceNameExp.exec(msg)[1];
+            var deviceAddress = deviceAddressExp.exec(msg)[1];
+            this.emit('peer_found', {
+                deviceAddress: deviceAddress,
+                deviceName: deviceName
+            });
+        }
+        /**
+         * peer disconnection event handler
+         * @param  {String} msg event message
+         */
     _onPeerDisconnect(msg) {
-        var deviceAddressExp = /p2p_dev_addr\=(\w{2}:\w{2}:\w{2}:\w{2}:\w{2}:\w{2})/g;
-        var deviceAddress = deviceAddressExp.exec(msg)[1];
-        this.emit('peer_disconnected', {
-            deviceAddress: deviceAddress
-        });
-    }
+            var deviceAddressExp = /p2p_dev_addr\=(\w{2}:\w{2}:\w{2}:\w{2}:\w{2}:\w{2})/g;
+            var deviceAddress = deviceAddressExp.exec(msg)[1];
+            this.emit('peer_disconnected', {
+                deviceAddress: deviceAddress
+            });
+        }
+        /**
+         * peer info event handler
+         * @param  {String} msg event message
+         */
     _onPeerInfo(msg) {
         msg = msg.split('\n');
         var deviceAddressExp = /\w{2}:\w{2}:\w{2}:\w{2}:\w{2}:\w{2}/;
