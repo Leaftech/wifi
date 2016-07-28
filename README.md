@@ -3,13 +3,21 @@
 ## Wpa-wifi
 WpaCli to control wpa_supplicant
 
+**Install:**
+
+			npm install wpa-wifi --save
+
+**Note:**
+
 This only works on linux, tested on ubuntu 14.4 and debian jesse.
-you need to have wpa_supplicant installed , run using sudo and running  with wpa_spplicant having config : **ctrl_interface=/var/run/wpa_supplicant**  
+you need to have wpa_supplicant installed , run using sudo and running  with wpa_spplicant having config : **ctrl_interface=/var/run/wpa_supplicant**
+
+For More example see test directory for p2p and wifi connection samples. This is a very basic library, it is nessary to write another wrapper over this.  
 
 **Reference:**
 http://w1.fi/wpa_supplicant/devel/ctrl_iface_page.html
 
-**Example**
+**Example: Wifi Connection**
 
 
 	  'use strict';
@@ -49,6 +57,8 @@ http://w1.fi/wpa_supplicant/devel/ctrl_iface_page.html
 **API Documention:**
 <a name="WpaCli"></a>
 
+<a name="WpaCli"></a>
+
 ## WpaCli
 WpaCli to control wpa_supplicant
 
@@ -57,31 +67,26 @@ WpaCli to control wpa_supplicant
 * [WpaCli](#WpaCli)
     * [new WpaCli(ifName)](#new_WpaCli_new)
     * [.connect()](#WpaCli+connect)
-    * [._onConnect()](#WpaCli+_onConnect)
-    * [._onMessage(msg)](#WpaCli+_onMessage)
-    * [._onCtrlEvent(msg)](#WpaCli+_onCtrlEvent)
-    * [._onError(err)](#WpaCli+_onError)
-    * [._onCongestion(err)](#WpaCli+_onCongestion)
-    * [._onListening()](#WpaCli+_onListening)
     * [.sendCmd(msg)](#WpaCli+sendCmd)
     * [.scan()](#WpaCli+scan)
     * [.scanResults()](#WpaCli+scanResults)
-    * [._onScanResult(msg)](#WpaCli+_onScanResult)
-    * [._onRawMsg(msg)](#WpaCli+_onRawMsg)
-    * [._onListNetwork(msg)](#WpaCli+_onListNetwork)
     * [.addNetwork()](#WpaCli+addNetwork)
     * [.listNetworks()](#WpaCli+listNetworks)
     * [.status()](#WpaCli+status)
-    * [._onStatus(msg)](#WpaCli+_onStatus)
     * [.setSSID(networkId, add)](#WpaCli+setSSID)
     * [.setPassword(networkId, password)](#WpaCli+setPassword)
     * [.enableNetwork(networkId)](#WpaCli+enableNetwork)
     * [.selectNetwork(networkId)](#WpaCli+selectNetwork)
-    * [._onApConnected()](#WpaCli+_onApConnected)
-    * [._onApDisconnected()](#WpaCli+_onApDisconnected)
     * [.startDhclient()](#WpaCli+startDhclient)
     * [.stopDhclient()](#WpaCli+stopDhclient)
     * [.disconnectAP()](#WpaCli+disconnectAP)
+    * [.peerFind()](#WpaCli+peerFind)
+    * [.peerList()](#WpaCli+peerList)
+    * [.peerStopFind()](#WpaCli+peerStopFind)
+    * [.peerInfo(peerAddress)](#WpaCli+peerInfo)
+    * [.peerConnectPBC(peerAddress, isOwner)](#WpaCli+peerConnectPBC)
+    * [.peerConnectPIN(peerAddress, pin, isOwner)](#WpaCli+peerConnectPIN)
+    * [.listInterfaces(callback)](#WpaCli+listInterfaces)
 
 <a name="new_WpaCli_new"></a>
 
@@ -314,5 +319,109 @@ stop dhclient for interface
 
 ### wpaCli.disconnectAP()
 disconnect from AP
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+<a name="WpaCli+peerFind"></a>
+
+### wpaCli.peerFind()
+search for peers
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+<a name="WpaCli+peerList"></a>
+
+### wpaCli.peerList()
+list avaliable peers
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+<a name="WpaCli+peerStopFind"></a>
+
+### wpaCli.peerStopFind()
+stop peer search
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+<a name="WpaCli+peerInfo"></a>
+
+### wpaCli.peerInfo(peerAddress)
+fetch Peer Information
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| peerAddress | <code>String</code> | peer device address |
+
+<a name="WpaCli+peerConnectPBC"></a>
+
+### wpaCli.peerConnectPBC(peerAddress, isOwner)
+connect to peer with PBC(Push Button Control) authentication mechanism
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| peerAddress | <code>String</code> | Mac Address of peer |
+| isOwner | <code>Boolean</code> | Your role, are you group owner? if yes then true else false |
+
+<a name="WpaCli+peerConnectPIN"></a>
+
+### wpaCli.peerConnectPIN(peerAddress, pin, isOwner)
+connect to peer with PIN(password) authentication mechanism
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| peerAddress | <code>String</code> | Mac Address of peer |
+| pin | <code>String</code> | password for authentication |
+| isOwner | <code>Boolean</code> | Your role, are you group owner? if yes then true else false |
+
+<a name="WpaCli+_onNewPeerFound"></a>
+
+### wpaCli._onNewPeerFound(msg)
+new peer event handler
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| msg | <code>String</code> | event message |
+
+<a name="WpaCli+_onPeerDisconnect"></a>
+
+### wpaCli._onPeerDisconnect(msg)
+peer disconnection event handler
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| msg | <code>String</code> | event message |
+
+<a name="WpaCli+_onPeerInfo"></a>
+
+### wpaCli._onPeerInfo(msg)
+peer info event handler
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| msg | <code>String</code> | event message |
+
+<a name="WpaCli+listInterfaces"></a>
+
+### wpaCli.listInterfaces(callback)
+list network interfaces on system
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback with list of interface |
+
+<a name="WpaCli+_onPeerConnected"></a>
+
+### wpaCli._onPeerConnected()
+peer connected handler
 
 **Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  

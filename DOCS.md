@@ -33,6 +33,17 @@ WpaCli to control wpa_supplicant
     * [.startDhclient()](#WpaCli+startDhclient)
     * [.stopDhclient()](#WpaCli+stopDhclient)
     * [.disconnectAP()](#WpaCli+disconnectAP)
+    * [.peerFind()](#WpaCli+peerFind)
+    * [.peerList()](#WpaCli+peerList)
+    * [.peerStopFind()](#WpaCli+peerStopFind)
+    * [.peerInfo(peerAddress)](#WpaCli+peerInfo)
+    * [.peerConnectPBC(peerAddress, isOwner)](#WpaCli+peerConnectPBC)
+    * [.peerConnectPIN(peerAddress, pin, isOwner)](#WpaCli+peerConnectPIN)
+    * [._onNewPeerFound(msg)](#WpaCli+_onNewPeerFound)
+    * [._onPeerDisconnect(msg)](#WpaCli+_onPeerDisconnect)
+    * [._onPeerInfo(msg)](#WpaCli+_onPeerInfo)
+    * [.listInterfaces(callback)](#WpaCli+listInterfaces)
+    * [._onPeerConnected()](#WpaCli+_onPeerConnected)
 
 <a name="new_WpaCli_new"></a>
 
@@ -265,5 +276,109 @@ stop dhclient for interface
 
 ### wpaCli.disconnectAP()
 disconnect from AP
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+<a name="WpaCli+peerFind"></a>
+
+### wpaCli.peerFind()
+search for peers
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+<a name="WpaCli+peerList"></a>
+
+### wpaCli.peerList()
+list avaliable peers
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+<a name="WpaCli+peerStopFind"></a>
+
+### wpaCli.peerStopFind()
+stop peer search
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+<a name="WpaCli+peerInfo"></a>
+
+### wpaCli.peerInfo(peerAddress)
+fetch Peer Information
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| peerAddress | <code>String</code> | peer device address |
+
+<a name="WpaCli+peerConnectPBC"></a>
+
+### wpaCli.peerConnectPBC(peerAddress, isOwner)
+connect to peer with PBC(Push Button Control) authentication mechanism
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| peerAddress | <code>String</code> | Mac Address of peer |
+| isOwner | <code>Boolean</code> | Your role, are you group owner? if yes then true else false |
+
+<a name="WpaCli+peerConnectPIN"></a>
+
+### wpaCli.peerConnectPIN(peerAddress, pin, isOwner)
+connect to peer with PIN(password) authentication mechanism
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| peerAddress | <code>String</code> | Mac Address of peer |
+| pin | <code>String</code> | password for authentication |
+| isOwner | <code>Boolean</code> | Your role, are you group owner? if yes then true else false |
+
+<a name="WpaCli+_onNewPeerFound"></a>
+
+### wpaCli._onNewPeerFound(msg)
+new peer event handler
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| msg | <code>String</code> | event message |
+
+<a name="WpaCli+_onPeerDisconnect"></a>
+
+### wpaCli._onPeerDisconnect(msg)
+peer disconnection event handler
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| msg | <code>String</code> | event message |
+
+<a name="WpaCli+_onPeerInfo"></a>
+
+### wpaCli._onPeerInfo(msg)
+peer info event handler
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| msg | <code>String</code> | event message |
+
+<a name="WpaCli+listInterfaces"></a>
+
+### wpaCli.listInterfaces(callback)
+list network interfaces on system
+
+**Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback with list of interface |
+
+<a name="WpaCli+_onPeerConnected"></a>
+
+### wpaCli._onPeerConnected()
+peer connected handler
 
 **Kind**: instance method of <code>[WpaCli](#WpaCli)</code>  

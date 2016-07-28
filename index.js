@@ -107,6 +107,9 @@ class WpaCli extends EventEmitter {
                 case /P2P-DEVICE-LOST/.test(msg):
                     this._onPeerDisconnect(msg);
                     break;
+                case /P2P-GROUP-STARTED/.test(msg):
+                    this._onPeerConnected(msg);
+                    break;
             }
         }
         /**
@@ -380,51 +383,62 @@ class WpaCli extends EventEmitter {
          * @param  {String} msg event message
          */
     _onPeerInfo(msg) {
-        msg = msg.split('\n');
-        var deviceAddressExp = /\w{2}:\w{2}:\w{2}:\w{2}:\w{2}:\w{2}/;
-        var status = {};
-        msg.forEach(function(line) {
-            var deviceAddress = deviceAddressExp.exec(line);
-            if (line.length > 3 && !deviceAddress) {
-                line = line.split('=');
-                status[line[0]] = line[1];
-            } else if (line.length) {
-                status.address = deviceAddress[0];
-            }
-        });
-        this.emit('peer_info', status);
-    }
+            msg = msg.split('\n');
+            var deviceAddressExp = /\w{2}:\w{2}:\w{2}:\w{2}:\w{2}:\w{2}/;
+            var status = {};
+            msg.forEach(function(line) {
+                var deviceAddress = deviceAddressExp.exec(line);
+                if (line.length > 3 && !deviceAddress) {
+                    line = line.split('=');
+                    status[line[0]] = line[1];
+                } else if (line.length) {
+                    status.address = deviceAddress[0];
+                }
+            });
+            this.emit('peer_info', status);
+        }
+        /**
+         * list network interfaces on system
+         * @param  {Function} callback callback with list of interface
+         */
     listInterfaces(callback) {
-        exec(WPA_CMD.listInterfaces, function(err, stdin) {
-            var interfaceInfo = {};
-            if (err) {
+            exec(WPA_CMD.listInterfaces, function(err, stdin) {
+                var interfaceInfo = {};
+                if (err) {
 
-            } else {
-                var output = stdin.split(/\n/);
-                var currentInterface;
-                const PATTERNS = {
-                    interface: /(^\w{1,20})/g,
-                    macAddr: /([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})/,
-                    ipaddress: /inet\saddr\:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/,
-                    bcastAddr: /Bcast\:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/
-                };
-                output.forEach(function(line) {
-                    switch (true) {
-                        case PATTERNS.interface.test(line):
-                            currentInterface = line.match(/(^\w{1,20})/)[0];
-                            interfaceInfo[currentInterface] = {};
-                            interfaceInfo[currentInterface].hwAddr = (PATTERNS.macAddr.test(line)) ? PATTERNS.macAddr.exec(line)[0] : '';
-                            break;
-                        case PATTERNS.ipaddress.test(line):
-                            interfaceInfo[currentInterface].ipaddress = PATTERNS.ipaddress.exec(line)[1];
-                            interfaceInfo[currentInterface].broadcastAddress = (PATTERNS.bcastAddr.exec(line)) ? PATTERNS.bcastAddr.exec(line)[1] : '';
-                            break;
-                        default:
-                    }
-                });
-            }
-            callback(interfaceInfo);
-        });
+                } else {
+                    var output = stdin.split(/\n/);
+                    var currentInterface;
+                    const PATTERNS = {
+                        interface: /(^\w{1,20})/g,
+                        macAddr: /([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})/,
+                        ipaddress: /inet\saddr\:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/,
+                        bcastAddr: /Bcast\:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/
+                    };
+                    output.forEach(function(line) {
+                        switch (true) {
+                            case PATTERNS.interface.test(line):
+                                currentInterface = line.match(/(^\w{1,20})/)[0];
+                                interfaceInfo[currentInterface] = {};
+                                interfaceInfo[currentInterface].hwAddr = (PATTERNS.macAddr.test(line)) ? PATTERNS.macAddr.exec(line)[0] : '';
+                                break;
+                            case PATTERNS.ipaddress.test(line):
+                                interfaceInfo[currentInterface].ipaddress = PATTERNS.ipaddress.exec(line)[1];
+                                interfaceInfo[currentInterface].broadcastAddress = (PATTERNS.bcastAddr.exec(line)) ? PATTERNS.bcastAddr.exec(line)[1] : '';
+                                break;
+                            default:
+                        }
+                    });
+                }
+                callback(interfaceInfo);
+            });
+        }
+        /**
+         * peer connected handler
+         *
+         */
+    _onPeerConnected() {
+        this.emit('peer_connected');
     }
 }
 
