@@ -6,6 +6,7 @@ const exec = require('child_process').exec;
     WPA_CLI commands
  */
 const WPA_CMD = {
+    listInterfaces: 'ifconfig',
     attach: 'ATTACH',
     scan: 'SCAN',
     scanResult: 'SCAN_RESULTS',
@@ -392,6 +393,38 @@ class WpaCli extends EventEmitter {
             }
         });
         this.emit('peer_info', status);
+    }
+    listInterfaces(callback) {
+        exec(WPA_CMD.listInterfaces, function(err, stdin) {
+            var interfaceInfo = {};
+            if (err) {
+
+            } else {
+                var output = stdin.split(/\n/);
+                var currentInterface;
+                const PATTERNS = {
+                    interface: /(^\w{1,20})/g,
+                    macAddr: /([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})/,
+                    ipaddress: /inet\saddr\:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/,
+                    bcastAddr: /Bcast\:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/
+                };
+                output.forEach(function(line) {
+                    switch (true) {
+                        case PATTERNS.interface.test(line):
+                            currentInterface = line.match(/(^\w{1,20})/)[0];
+                            interfaceInfo[currentInterface] = {};
+                            interfaceInfo[currentInterface].hwAddr = (PATTERNS.macAddr.test(line)) ? PATTERNS.macAddr.exec(line)[0] : '';
+                            break;
+                        case PATTERNS.ipaddress.test(line):
+                            interfaceInfo[currentInterface].ipaddress = PATTERNS.ipaddress.exec(line)[1];
+                            interfaceInfo[currentInterface].broadcastAddress = (PATTERNS.bcastAddr.exec(line)) ? PATTERNS.bcastAddr.exec(line)[1] : '';
+                            break;
+                        default:
+                    }
+                });
+            }
+            callback(interfaceInfo);
+        });
     }
 }
 
