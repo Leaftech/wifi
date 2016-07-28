@@ -5,7 +5,7 @@ WpaCli to control wpa_supplicant
 
 **Install:**
 
-			npm install wpa-wifi --save
+`npm install wpa-wifi --save`
 
 **Note:**
 
