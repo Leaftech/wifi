@@ -446,7 +446,7 @@ class WpaCli extends EventEmitter {
         this.emit('peer_connected', peerInterface);
     }
     _onPeerInvitation(msg) {
-        var peerAddress = /bssid=(\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2})/.exec(msg);
+        var peerAddress = /bssid=(\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2})/.exec(msg)[1];
         this.emit('peer_invitation_recieved', peerAddress);
     }
     removeVitualInterface(iFaceName, callback) {
