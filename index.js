@@ -1,10 +1,10 @@
-'use strict'
-const unix = require('unix-dgram')
-const EventEmitter = require('events').EventEmitter
-const exec = require('child_process').exec
-    /*
-        WPA_CLI commands
-     */
+'use strict';
+const unix = require('unix-dgram');
+const EventEmitter = require('events').EventEmitter;
+const exec = require('child_process').exec;
+/*
+    WPA_CLI commands
+ */
 const WPA_CMD = {
     listInterfaces: 'ifconfig',
     attach: 'ATTACH',
