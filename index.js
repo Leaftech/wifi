@@ -445,8 +445,9 @@ class WpaCli extends EventEmitter {
         var peerInterface = /P2P-GROUP-STARTED (p2p\-\p2p\d{1,2}\-\d{1,2})/.exec(msg)[1];
         this.emit('peer_connected', peerInterface);
     }
-    _onPeerInvitation() {
-        this.emit('peer_invitation_recieved');
+    _onPeerInvitation(msg) {
+        var peerAddress = /bssid=(\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2})/.exec(msg);
+        this.emit('peer_invitation_recieved', peerAddress);
     }
     removeVitualInterface(iFaceName, callback) {
         var cmd = WPA_CMD.removeVirtIface.replace(':iface', iFaceName);
