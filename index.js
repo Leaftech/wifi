@@ -1,10 +1,10 @@
-'use strict';
-const unix = require('unix-dgram');
-const EventEmitter = require('events').EventEmitter;
-const exec = require('child_process').exec;
-/*
-    WPA_CLI commands
- */
+'use strict'
+const unix = require('unix-dgram')
+const EventEmitter = require('events').EventEmitter
+const exec = require('child_process').exec
+    /*
+        WPA_CLI commands
+     */
 const WPA_CMD = {
     listInterfaces: 'ifconfig',
     attach: 'ATTACH',
@@ -23,8 +23,10 @@ const WPA_CMD = {
     peerStopSearch: 'P2P_STOP_FIND',
     peerConnect: 'P2P_CONNECT :peer_addr :auth_type :pin :owner_params',
     peerInfo: 'P2P_PEER :peer_addr',
-    peerInvite: 'P2P_INVITE'
+    peerInvite: 'P2P_INVITE',
+    removeVirtIface: 'ifconfig :iface down'
 };
+
 /**
  * WpaCli to control wpa_supplicant
  */
@@ -50,7 +52,6 @@ class WpaCli extends EventEmitter {
             this.client.once('connect', this._onConnect.bind(this));
             this.client.once('listening', this._onListening.bind(this));
             this.client.connect(this.socketPath);
-
         }
         /**
          * connect event handler
@@ -110,6 +111,10 @@ class WpaCli extends EventEmitter {
                 case /P2P-GROUP-STARTED/.test(msg):
                     this._onPeerConnected(msg);
                     break;
+                case /P2P-INVITATION-RECEIVED/.test(msg):
+                    this._onPeerInvitation(msg);
+                    break;
+
             }
         }
         /**
@@ -168,9 +173,9 @@ class WpaCli extends EventEmitter {
                         freq: line[1].trim(),
                         rssi: line[2].trim(),
                         ssid: line[4].trim()
-                    });
+                    })
                 }
-            });
+            })
             this.emit('scan_results', scanResults);
         }
         /**
@@ -340,6 +345,7 @@ class WpaCli extends EventEmitter {
             cmd = cmd.replace(':auth_type', 'pbc').replace(':pin', '');
             cmd = cmd.replace(':owner_params', (isOwner) ? 'auth go_intent=7' : '');
             this.sendCmd(cmd);
+            console.log('connection cmd sent');
         }
         /**
          * connect to peer with PIN(password) authentication mechanism
@@ -350,7 +356,7 @@ class WpaCli extends EventEmitter {
     peerConnectPIN(peerAddress, pin, isOwner) {
             var cmd = WPA_CMD.peerConnect.replace(':peer_addr', peerAddress);
             cmd = cmd.replace(':auth_type', 'pin').replace(':pin', pin);
-            cmd = cmd.replace(':owner_params', (isOwner) ? 'auth go_intent=7' : '');
+            cmd = cmd.replace(':owner_params', (isOwner) ? ' auth go_intent=7 ' : '');
             this.sendCmd(WPA_CMD.peerConnect);
         }
         /**
@@ -404,13 +410,11 @@ class WpaCli extends EventEmitter {
     listInterfaces(callback) {
             exec(WPA_CMD.listInterfaces, function(err, stdin) {
                 var interfaceInfo = {};
-                if (err) {
-
-                } else {
+                if (err) {} else {
                     var output = stdin.split(/\n/);
                     var currentInterface;
                     const PATTERNS = {
-                        interface: /(^\w{1,20})/g,
+                        interface: /^\w{1,20}/g,
                         macAddr: /([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})/,
                         ipaddress: /inet\saddr\:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/,
                         bcastAddr: /Bcast\:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/
@@ -418,12 +422,12 @@ class WpaCli extends EventEmitter {
                     output.forEach(function(line) {
                         switch (true) {
                             case PATTERNS.interface.test(line):
-                                currentInterface = line.match(/(^\w{1,20})/)[0];
+                                currentInterface = /(^\w{1,20}\-\w{1,20}\-\w{1,20}|^\w{1,20})/g.exec(line)[1];
                                 interfaceInfo[currentInterface] = {};
                                 interfaceInfo[currentInterface].hwAddr = (PATTERNS.macAddr.test(line)) ? PATTERNS.macAddr.exec(line)[0] : '';
                                 break;
                             case PATTERNS.ipaddress.test(line):
-                                interfaceInfo[currentInterface].ipaddress = PATTERNS.ipaddress.exec(line)[1];
+                                interfaceInfo[currentInterface].ipaddress = (PATTERNS.ipaddress.exec(line)) ? PATTERNS.ipaddress.exec(line)[1] : '';
                                 interfaceInfo[currentInterface].broadcastAddress = (PATTERNS.bcastAddr.exec(line)) ? PATTERNS.bcastAddr.exec(line)[1] : '';
                                 break;
                             default:
@@ -437,8 +441,19 @@ class WpaCli extends EventEmitter {
          * peer connected handler
          *
          */
-    _onPeerConnected() {
-        this.emit('peer_connected');
+    _onPeerConnected(msg) {
+        var peerInterface = /P2P-GROUP-STARTED (p2p\-\p2p\d{1,2}\-\d{1,2})/.exec(msg)[1];
+        this.emit('peer_connected', peerInterface);
+    }
+    _onPeerInvitation() {
+        this.emit('peer_invitation_recieved');
+    }
+    removeVitualInterface(iFaceName, callback) {
+        var cmd = WPA_CMD.removeVirtIface.replace(':iface', iFaceName);
+        exec(cmd, function(err, stdin, stderr) {
+            console.log(err, stdin, stderr);
+            callback(err);
+        });
     }
 }
 
