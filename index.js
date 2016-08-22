@@ -24,7 +24,7 @@ const WPA_CMD = {
     peerConnect: 'P2P_CONNECT :peer_addr :auth_type :pin :owner_params',
     peerInfo: 'P2P_PEER :peer_addr',
     peerInvite: 'P2P_INVITE',
-    removeVirtIface: 'ifconfig :iface down'
+    removeVirtIface: 'P2P_GROUP_REMOVE :iface'
 };
 
 /**
@@ -446,15 +446,18 @@ class WpaCli extends EventEmitter {
         this.emit('peer_connected', peerInterface);
     }
     _onPeerInvitation(msg) {
-        var peerAddress = /bssid=(\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2})/.exec(msg)[1];
-        this.emit('peer_invitation_recieved', peerAddress);
-    }
+            var peerAddress = /bssid=(\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2})/.exec(msg)[1];
+            this.emit('peer_invitation_recieved', peerAddress);
+        }
+        /**
+         * Remove virtual interface eg: p2p-p2p0-1
+         * @param  {String}   iFaceName interface name
+         * @param  {Function} callback  callback function
+         */
     removeVitualInterface(iFaceName, callback) {
         var cmd = WPA_CMD.removeVirtIface.replace(':iface', iFaceName);
-        exec(cmd, function(err, stdin, stderr) {
-            console.log(err, stdin, stderr);
-            callback(err);
-        });
+        this.sendCmd(cmd);
+        callback();
     }
 }
 
