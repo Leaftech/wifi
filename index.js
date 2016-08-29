@@ -283,7 +283,7 @@ class WpaCli extends EventEmitter {
          * start dhclient for interface
          */
     startDhclient() {
-            exec('dhclient ' + this.ifName, function(err) {
+            exec('sudo dhclient ' + this.ifName, function(err) {
                 if (err) {
                     console.log(err);
                 } else {
@@ -295,7 +295,7 @@ class WpaCli extends EventEmitter {
          * stop dhclient for interface
          */
     stopDhclient() {
-            exec('dhclient -r ' + this.ifName, function(err) {
+            exec('sudo dhclient -r ' + this.ifName, function(err) {
                 if (err) {
                     console.log(err);
                 } else {
