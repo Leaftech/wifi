@@ -24,7 +24,8 @@ const WPA_CMD = {
     peerConnect: 'P2P_CONNECT :peer_addr :auth_type :pin :owner_params',
     peerInfo: 'P2P_PEER :peer_addr',
     peerInvite: 'P2P_INVITE',
-    removeVirtIface: 'P2P_GROUP_REMOVE :iface'
+    removeVirtIface: 'P2P_GROUP_REMOVE :iface',
+    flushPeers: 'P2P_FLUSH'
 };
 
 /**
@@ -173,9 +174,9 @@ class WpaCli extends EventEmitter {
                         freq: line[1].trim(),
                         rssi: line[2].trim(),
                         ssid: line[4].trim()
-                    })
+                    });
                 }
-            })
+            });
             this.emit('scan_results', scanResults);
         }
         /**
@@ -442,9 +443,13 @@ class WpaCli extends EventEmitter {
          *
          */
     _onPeerConnected(msg) {
-        var peerInterface = /P2P-GROUP-STARTED (p2p\-\p2p\d{1,2}\-\d{1,2})/.exec(msg)[1];
-        this.emit('peer_connected', peerInterface);
-    }
+            var peerInterface = /P2P-GROUP-STARTED (p2p\-\p2p\d{1,2}\-\d{1,2})/.exec(msg)[1];
+            this.emit('peer_connected', peerInterface);
+        }
+        /**
+         * handle peer invitation event
+         * @param  {String} msg message 
+         */
     _onPeerInvitation(msg) {
             var peerAddress = /bssid=(\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2})/.exec(msg)[1];
             this.emit('peer_invitation_recieved', peerAddress);
@@ -455,9 +460,16 @@ class WpaCli extends EventEmitter {
          * @param  {Function} callback  callback function
          */
     removeVitualInterface(iFaceName, callback) {
-        var cmd = WPA_CMD.removeVirtIface.replace(':iface', iFaceName);
+            var cmd = WPA_CMD.removeVirtIface.replace(':iface', iFaceName);
+            this.sendCmd(cmd);
+            callback();
+        }
+        /**
+         * Flush peer data
+         */
+    flushPeers() {
+        var cmd = WPA_CMD.flushPeers;
         this.sendCmd(cmd);
-        callback();
     }
 }
 
