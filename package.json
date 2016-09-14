@@ -21,7 +21,6 @@
     "author": "Ashish",
     "license": "ISC",
     "dependencies": {
-        "grunt": "^1.0.1",
         "unix-dgram": "^1.0.0"
     },
     "devDependencies": {
