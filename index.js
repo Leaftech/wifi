@@ -299,10 +299,9 @@ class WpaCli extends EventEmitter {
             exec('sudo dhclient -r ' + this.ifName, function(err) {
                 if (err) {
                     console.log(err);
-                } else {
-                    this.emit('ap_disconnected');
                 }
             }.bind(this));
+            this.emit('ap_disconnected');
         }
         /**
          * disconnect from AP
